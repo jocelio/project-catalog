@@ -10,7 +10,9 @@
   "license": "BSD-2-Clause",
   "dependencies": {
     "react-dom": "~15.3.2",
-    "react": "~15.3.2"
+    "react": "~15.3.2",
+    "material-design-lite": "~1.2.1",
+    "axios": "~0.15.2"
   },
   "devDependencies": {
     "webpack": "~1.13.3",
