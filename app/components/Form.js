@@ -1,29 +1,46 @@
-var React = require('react');
-var CatalogService = require('../services/ProjectCatalogService');
+let React = require('react');
+let TablePojects = require('./TableProjects');
 
 
-class Form extends React.Component {
+var Form = React.createClass({
 
-  handleSubmit(e) {
+  handleSubmit: function(e) {
+
       e.preventDefault();
 
-      CatalogService.addProject(this.refs.projname.value).then(function(response) {
+      this.props.getAxios().post('/projects/', {
+          'proj-name': this.refs.projname.value,
+          'name':  this.refs.name.value,
+          'framework': "Pedestal/React",
+          'lang': "Clojure and js"
+        }).then(function(res){
+          this.props.updateList(res.data);
+        }.bind(this)).catch(function(res){
+          console.log(res);
+        });
 
-      }.bind(this));
-  }
-
-  render() {
+        this.sendThru();
+  },
+  sendThru() {
+    this.refs.projname.value='';
+    this.refs.name.value ='';
+  },
+  render: function() {
     return (<form method="post" action="addproject" onSubmit={this.handleSubmit}>
                 <div className="mdl-textfield mdl-js-textfield">
-                    <input className="mdl-textfield__input" type="text" id="" red="projname"/>
+                    <input className="mdl-textfield__input" type="text" id="name" ref="name"/>
+                    <label className="mdl-textfield__label" >Name</label>
+                </div>
+                <div className="mdl-textfield mdl-js-textfield">
+                    <input className="mdl-textfield__input" type="text" id="projname" ref="projname"/>
                     <label className="mdl-textfield__label" >Project Name</label>
                 </div>
-                <br/><br/>
-                <button className="mdl-button mdl-js-button mdl-button--raised">
-                    Send
-                </button>
+                <br/>
+                <input type="submit" className="mdl-button mdl-js-button mdl-button--raised"/>
            </form>);
-  };
-}
+  },
+
+
+});
 
 module.exports = Form;

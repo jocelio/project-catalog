@@ -47,8 +47,48 @@
 	var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(34);
 	var Form = __webpack_require__(172);
+	var TableProjects = __webpack_require__(199);
+	let axios = __webpack_require__(174);
 
-	ReactDOM.render(React.createElement(Form, { name: 'Sara' }), document.getElementById('app'));
+	var Tela = React.createClass({
+	  displayName: 'Tela',
+
+
+	  getInitialState: function () {
+	    return {
+	      projects: []
+	    };
+	  },
+
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(Form, { getAxios: this.getAxios, updateList: this.updateList }),
+	      React.createElement(TableProjects, { projects: this.state.projects })
+	    );
+	  },
+	  updateList: function (item) {
+	    this.setState({ projects: this.state.projects.concat([item]) });
+	  },
+	  componentDidMount: function () {
+	    this.getAxios().get('/projects/').then(function (resp) {
+	      this.setState({ projects: resp.data });
+	    }.bind(this));
+	  },
+
+	  getAxios: function () {
+	    return axios.create({
+	      baseURL: 'http://localhost:5000/',
+	      timeout: 1000,
+	      headers: { 'x-catalog-token': 'o brave new world' }
+	    });
+	  }
+
+	});
+
+	module.exports = Tela;
+	ReactDOM.render(React.createElement(Tela, null), document.querySelector('#app'));
 
 /***/ },
 /* 1 */
@@ -21421,61 +21461,69 @@
 /* 172 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var React = __webpack_require__(1);
-	var CatalogService = __webpack_require__(173);
+	let React = __webpack_require__(1);
+	let TablePojects = __webpack_require__(199);
 
-	class Form extends React.Component {
+	var Form = React.createClass({
+	  displayName: 'Form',
 
-	    handleSubmit(e) {
-	        e.preventDefault();
 
-	        CatalogService.addProject(this.refs.projname.value).then(function (response) {}.bind(this));
-	    }
+	  handleSubmit: function (e) {
 
-	    render() {
-	        return React.createElement(
-	            'form',
-	            { method: 'post', action: 'addproject', onSubmit: this.handleSubmit },
-	            React.createElement(
-	                'div',
-	                { className: 'mdl-textfield mdl-js-textfield' },
-	                React.createElement('input', { className: 'mdl-textfield__input', type: 'text', id: '', red: 'projname' }),
-	                React.createElement(
-	                    'label',
-	                    { className: 'mdl-textfield__label' },
-	                    'Project Name'
-	                )
-	            ),
-	            React.createElement('br', null),
-	            React.createElement('br', null),
-	            React.createElement(
-	                'button',
-	                { className: 'mdl-button mdl-js-button mdl-button--raised' },
-	                'Send'
-	            )
-	        );
-	    }
-	}
+	    e.preventDefault();
+
+	    this.props.getAxios().post('/projects/', {
+	      'proj-name': this.refs.projname.value,
+	      'name': this.refs.name.value,
+	      'framework': "Pedestal/React",
+	      'lang': "Clojure and js"
+	    }).then(function (res) {
+	      this.props.updateList(res.data);
+	    }.bind(this)).catch(function (res) {
+	      console.log(res);
+	    });
+
+	    this.sendThru();
+	  },
+	  sendThru() {
+	    this.refs.projname.value = '';
+	    this.refs.name.value = '';
+	  },
+	  render: function () {
+	    return React.createElement(
+	      'form',
+	      { method: 'post', action: 'addproject', onSubmit: this.handleSubmit },
+	      React.createElement(
+	        'div',
+	        { className: 'mdl-textfield mdl-js-textfield' },
+	        React.createElement('input', { className: 'mdl-textfield__input', type: 'text', id: 'name', ref: 'name' }),
+	        React.createElement(
+	          'label',
+	          { className: 'mdl-textfield__label' },
+	          'Name'
+	        )
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'mdl-textfield mdl-js-textfield' },
+	        React.createElement('input', { className: 'mdl-textfield__input', type: 'text', id: 'projname', ref: 'projname' }),
+	        React.createElement(
+	          'label',
+	          { className: 'mdl-textfield__label' },
+	          'Project Name'
+	        )
+	      ),
+	      React.createElement('br', null),
+	      React.createElement('input', { type: 'submit', className: 'mdl-button mdl-js-button mdl-button--raised' })
+	    );
+	  }
+
+	});
 
 	module.exports = Form;
 
 /***/ },
-/* 173 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var axios = __webpack_require__(174);
-
-	class ProjectCatalogService {
-
-	  construct() {}
-
-	  getProject(projectName) {
-	    return axios.get('http://localhost:5000/project/' + projectName);
-	  }
-
-	}
-
-/***/ },
+/* 173 */,
 /* 174 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -22955,6 +23003,51 @@
 	  };
 	};
 
+
+/***/ },
+/* 199 */
+/***/ function(module, exports, __webpack_require__) {
+
+	let React = __webpack_require__(1);
+
+	var TablePojects = React.createClass({
+	  displayName: 'TablePojects',
+
+
+	  render: function () {
+
+	    var lis = this.props.projects.map(function (pro, key) {
+	      return React.createElement(
+	        'li',
+	        { key: key },
+	        ' ',
+	        pro['name'],
+	        ' '
+	      );
+	    });
+
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement('hr', null),
+	      React.createElement(
+	        'h4',
+	        null,
+	        'Projetos'
+	      ),
+	      React.createElement(
+	        'ul',
+	        null,
+	        ' ',
+	        lis,
+	        ' '
+	      )
+	    );
+	  }
+
+	});
+
+	module.exports = TablePojects;
 
 /***/ }
 /******/ ]);
