@@ -47,7 +47,7 @@
 	var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(34);
 	var Form = __webpack_require__(172);
-	var TableProjects = __webpack_require__(199);
+	var TableProjects = __webpack_require__(173);
 	let axios = __webpack_require__(174);
 
 	var Tela = React.createClass({
@@ -21462,7 +21462,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	let React = __webpack_require__(1);
-	let TablePojects = __webpack_require__(199);
+	let TablePojects = __webpack_require__(173);
 
 	var Form = React.createClass({
 	  displayName: 'Form',
@@ -21474,9 +21474,9 @@
 
 	    this.props.getAxios().post('/projects/', {
 	      'proj-name': this.refs.projname.value,
-	      'name': this.refs.name.value,
-	      'framework': "Pedestal/React",
-	      'lang': "Clojure and js"
+	      'name': this.refs.projname.value,
+	      'framework': this.refs.projfw.value,
+	      'lang': this.refs.projlang.value
 	    }).then(function (res) {
 	      this.props.updateList(res.data);
 	    }.bind(this)).catch(function (res) {
@@ -21486,8 +21486,9 @@
 	    this.sendThru();
 	  },
 	  sendThru() {
+	    this.refs.projfw.value = '';
+	    this.refs.projlang.value = '';
 	    this.refs.projname.value = '';
-	    this.refs.name.value = '';
 	  },
 	  render: function () {
 	    return React.createElement(
@@ -21496,21 +21497,31 @@
 	      React.createElement(
 	        'div',
 	        { className: 'mdl-textfield mdl-js-textfield' },
-	        React.createElement('input', { className: 'mdl-textfield__input', type: 'text', id: 'name', ref: 'name' }),
-	        React.createElement(
-	          'label',
-	          { className: 'mdl-textfield__label' },
-	          'Name'
-	        )
-	      ),
-	      React.createElement(
-	        'div',
-	        { className: 'mdl-textfield mdl-js-textfield' },
 	        React.createElement('input', { className: 'mdl-textfield__input', type: 'text', id: 'projname', ref: 'projname' }),
 	        React.createElement(
 	          'label',
 	          { className: 'mdl-textfield__label' },
 	          'Project Name'
+	        )
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'mdl-textfield mdl-js-textfield' },
+	        React.createElement('input', { className: 'mdl-textfield__input', type: 'text', id: 'projlang', ref: 'projlang' }),
+	        React.createElement(
+	          'label',
+	          { className: 'mdl-textfield__label' },
+	          'Language'
+	        )
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'mdl-textfield mdl-js-textfield' },
+	        React.createElement('input', { className: 'mdl-textfield__input', type: 'text', id: 'projfw', ref: 'projfw' }),
+	        React.createElement(
+	          'label',
+	          { className: 'mdl-textfield__label' },
+	          'Framework'
 	        )
 	      ),
 	      React.createElement('br', null),
@@ -21523,7 +21534,88 @@
 	module.exports = Form;
 
 /***/ },
-/* 173 */,
+/* 173 */
+/***/ function(module, exports, __webpack_require__) {
+
+	let React = __webpack_require__(1);
+
+	var TablePojects = React.createClass({
+	  displayName: "TablePojects",
+
+
+	  render: function () {
+
+	    var lines = this.props.projects.map(function (project, key) {
+	      return React.createElement(
+	        "tr",
+	        { key: key },
+	        React.createElement(
+	          "td",
+	          { className: "mdl-data-table__cell--non-numeric" },
+	          project.name
+	        ),
+	        React.createElement(
+	          "td",
+	          null,
+	          project.lang
+	        ),
+	        React.createElement(
+	          "td",
+	          null,
+	          project.framework
+	        )
+	      );
+	    });
+
+	    return React.createElement(
+	      "div",
+	      null,
+	      React.createElement("hr", null),
+	      React.createElement(
+	        "h4",
+	        null,
+	        "Projetos"
+	      ),
+	      React.createElement(
+	        "table",
+	        { className: "mdl-data-table mdl-js-data-table" },
+	        React.createElement(
+	          "thead",
+	          null,
+	          React.createElement(
+	            "tr",
+	            null,
+	            React.createElement(
+	              "th",
+	              { className: "mdl-data-table__header--sorted-ascending " },
+	              "Project Name"
+	            ),
+	            React.createElement(
+	              "th",
+	              null,
+	              "Project Language"
+	            ),
+	            React.createElement(
+	              "th",
+	              null,
+	              "Project Framework"
+	            )
+	          )
+	        ),
+	        React.createElement(
+	          "tbody",
+	          null,
+	          lines
+	        )
+	      )
+	    );
+	  }
+
+	});
+
+	module.exports = TablePojects;
+
+/***/ },
 /* 174 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -23003,51 +23095,6 @@
 	  };
 	};
 
-
-/***/ },
-/* 199 */
-/***/ function(module, exports, __webpack_require__) {
-
-	let React = __webpack_require__(1);
-
-	var TablePojects = React.createClass({
-	  displayName: 'TablePojects',
-
-
-	  render: function () {
-
-	    var lis = this.props.projects.map(function (pro, key) {
-	      return React.createElement(
-	        'li',
-	        { key: key },
-	        ' ',
-	        pro['name'],
-	        ' '
-	      );
-	    });
-
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement('hr', null),
-	      React.createElement(
-	        'h4',
-	        null,
-	        'Projetos'
-	      ),
-	      React.createElement(
-	        'ul',
-	        null,
-	        ' ',
-	        lis,
-	        ' '
-	      )
-	    );
-	  }
-
-	});
-
-	module.exports = TablePojects;
 
 /***/ }
 /******/ ]);
